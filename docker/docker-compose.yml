@@ -1,0 +1,97 @@
+version: '3.4'
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile-back
+      args:
+        GIT_USER: "${GIT_USER}"
+        GIT_BRANCH: "${GIT_BRANCH}"
+    command: >
+      bash -c "dockerize -wait tcp://database:3306 -wait tcp://zmd:27272 -wait tcp://cache:11211 -wait tcp://elasticsearch:9200 -timeout 30s
+      && python manage.py migrate --settings zds.settings.docker
+      && python manage.py loaddata fixtures/*.yaml --settings zds.settings.docker
+      && python manage.py load_factory_data fixtures/advanced/aide_tuto_media.yaml --settings zds.settings.docker
+      && python manage.py load_fixtures --size=low --all --settings zds.settings.docker
+      && python manage.py es_manager index_all --settings zds.settings.docker
+      && python manage.py runserver 0.0.0.0:8000 --settings zds.settings.docker"
+    ports:
+      - "8001:8000"
+    links:
+      - database
+      - elasticsearch
+      - assets
+      - zmd
+      - cache
+    depends_on:
+      - database
+      - elasticsearch
+      - assets
+      - zmd
+      - cache
+    volumes:
+      - asset_volume:/zds/dist:ro
+  assets:
+    build:
+      context: .
+      dockerfile: Dockerfile-front
+      args:
+        GIT_USER: "${GIT_USER}"
+        GIT_BRANCH: "${GIT_BRANCH}"
+    volumes:
+      - asset_volume:/zds/dist:ro
+  zmd:
+    build:
+      context: .
+      dockerfile: Dockerfile-zmd
+      args:
+        GIT_USER: "${GIT_USER}"
+        GIT_BRANCH: "${GIT_BRANCH}"
+    working_dir: /zds/zmd/node_modules/zmarkdown
+    command: bash -c "npm run server && pm2 monit"
+    ports:
+      - "27272:27272"
+    expose:
+      - "27272"
+  cache:
+    image: memcached:1.5-alpine
+    ports:
+      - "11211:11211"
+    expose:
+      - "11211"
+  database:
+    image: mariadb:10.4
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: zds_docker
+      MYSQL_ROOT_PASSWORD: 'zds_password'
+    volumes:
+      - dbdata:/var/lib/mysql
+      - rundb:/var/run/mysqld
+      - ./mysql/conf.d:/etc/mysql/conf.d
+  admin:
+    image: adminer
+    ports:
+      - "8080:8080"
+  elasticsearch:
+    image: elasticsearch:5.5.2
+    ports:
+      - "9200:9200"
+    expose:
+      - "9200"
+    environment:
+      - "http.host=0.0.0.0"
+      - "transport.host=127.0.0.1"
+      - "xpack.security.enabled=false"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+volumes:
+  dbdata:
+  rundb:
+  esdata:
+  asset_volume:
