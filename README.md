@@ -37,3 +37,4 @@ Pour démarrer les containers.
 
 - Base de donnée : MySQL
 - Système de cache : memcached
+- Moteur d'indexation : elasticsearch
