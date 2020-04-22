@@ -2,19 +2,24 @@
 
 import sys, os
 import subprocess
+import argparse
 
-args = sys.argv
-if len(args) == 1:
-    print("Error : The script require one args <git_user>:<git_branch>")
+parser = argparse.ArgumentParser()
+parser.add_argument("--full", dest="full", help="Run full version of app (with elasticsearch, texlive)", action="store_true")
+parser.add_argument("--user", dest="git_user", help="Git user", default="zestedesavoir")
+parser.add_argument("--branch", dest="git_branch", help="Git branch", default="dev")
+args = parser.parse_args()
+
+
+if not args.git_user:
+    print("Provide --user field")
     sys.exit(1)
-elif len(args) == 2:
-    args = [args[0]] + args[1].split(":")
-    if len(args) != 3:
-        print("Error : The script require one args <git_user>:<git_branch>")
-        sys.exit(1)
+if not args.git_branch:
+    print("Provide --branch field")
+    sys.exit(1)
 
-git_branch = args[2]
-git_user = args[1]
+git_branch = args.git_branch
+git_user = args.git_user
 
 
 os.environ["GIT_BRANCH"] = git_branch
@@ -24,7 +29,12 @@ print("===================================================")
 print("{}/{}".format(git_user, git_branch))
 print("===================================================")
 
-build = subprocess.run(["docker-compose", "build", "--force-rm", "--no-cache"])
+file = "docker-compose-lite.yml"
+if args.full:
+    print("DEPLOY FULL VERSION OF SITE")
+    file = "docker-compose.yml"
+
+build = subprocess.run(["docker-compose", "-f", file, "build", "--force-rm", "--no-cache"])
 
 print("===================================================")
 print("Start app")
@@ -32,4 +42,4 @@ print("===================================================")
 
 if build.returncode == 0:
     subprocess.run(["docker-compose", "down", "-v"])
-    subprocess.run(["docker-compose", "up"])
+    subprocess.run(["docker-compose", "-f", file, "up"])

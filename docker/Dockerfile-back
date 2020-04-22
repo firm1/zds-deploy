@@ -19,6 +19,7 @@ RUN rm -rf deploy.tar.gz
 RUN rm -rf zds-site-`echo ${GIT_BRANCH} | sed -r 's/\//-/g' | sed -r 's/^v//g'`
 
 COPY ./settings_docker.py /zds/zds/settings/docker.py
+COPY ./service/zds-index.sh /zds/zds-index.sh
 
 RUN pip3 -q install -r /zds/requirements-dev.txt
 RUN pip3 -q install -r /zds/requirements-prod.txt

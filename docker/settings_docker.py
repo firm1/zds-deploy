@@ -33,5 +33,6 @@ INSTALLED_APPS += (
 )
 
 ZDS_APP['zmd']['server'] = 'http://zmd:27272'
+ZDS_APP['visual_changes'] = ['snow']
 
 ES_CONNECTIONS['default']['hosts'] = ['elasticsearch:9200']
