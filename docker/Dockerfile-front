@@ -9,13 +9,17 @@ RUN mkdir /zds
 WORKDIR /zds
 
 RUN apt-get update
-RUN apt-get install -y wget
-RUN wget -q https://github.com/${GIT_USER}/zds-site/archive/${GIT_BRANCH}.tar.gz -O deploy.tar.gz
+RUN apt-get install -y wget dh-autoreconf
+RUN wget -q https://github.com/${GIT_USER}/zds-site/archive/${GIT_BRANCH}.tar.gz -O ${GIT_BRANCH}.tar.gz
 
-RUN tar -xf deploy.tar.gz
+RUN tar -xf ${GIT_BRANCH}.tar.gz
 RUN cp -rp zds-site-`echo ${GIT_BRANCH} | sed -r 's/\//-/g' | sed -r 's/^v//g'`/* .
-RUN rm -rf deploy.tar.gz
+RUN rm -rf ${GIT_BRANCH}.tar.gz
 RUN rm -rf zds-site-`echo ${GIT_BRANCH} | sed -r 's/\//-/g' | sed -r 's/^v//g'`
+
+RUN echo "NODE_ENV : ${NODE_ENV}"
+RUN echo "GIT_USER : ${GIT_USER}"
+RUN echo "GIT_BRANCH : ${GIT_BRANCH}"
 
 RUN yarn install
 

@@ -53,6 +53,13 @@ Exemple (pour déployer la branche dev de zestedesavoir)
 ./build.py --user=zestedesavoir --branch=dev --full
 ```
 
+Il est aussi possible de déployer directement une PR en fonction de son numéro :
+
+```bash
+./build.py --pr=<numero_pr>
+
+```
+
 En cas de problème lors du démarrage des containers, il est aussi possible de faire
 
 ```bash
@@ -67,3 +74,14 @@ Pour démarrer les containers.
 - Système de cache : memcached
 - Moteur d'indexation : elasticsearch
 - Moteur de génération de pdf : Latex
+
+
+## Liste des ports exposés
+
+Service | Port | Utilisé en version lite ?
+---|---|---
+zds-site | `8001` | oui
+zmd | `27272` | oui
+mariadb | `3306` | oui
+memcached | `11211` | oui
+elasiticsearch | `9200` | non 

@@ -13,7 +13,7 @@ WORKDIR /zds
 
 # Install packages
 RUN apt-get update
-RUN apt-get install -y texlive texlive-luatex texlive-lang-french texlive-latex-extra texlive-fonts-extra python-pygments xzdec
+RUN apt-get install -y texlive texlive-luatex texlive-lang-french texlive-latex-extra texlive-fonts-extra python-pygments xzdec librsvg2-bin
 
 # Init tree
 RUN mkdir /root/texmf
