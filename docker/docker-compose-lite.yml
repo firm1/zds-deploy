@@ -1,14 +1,19 @@
 version: '3.4'
 services:
-  webapp:
+  zds_base:
+    image: zds_base:latest
     build:
       context: .
-      dockerfile: Dockerfile-back
+      dockerfile: init.Dockerfile
       args:
         GIT_USER: "${GIT_USER}"
         GIT_BRANCH: "${GIT_BRANCH}"
+  webapp:
+    build:
+      context: .
+      dockerfile: back.Dockerfile
     command: >
-      bash -c "dockerize -wait tcp://database:3306 -wait tcp://zmd:27272 -wait tcp://cache:11211 -timeout 30s
+      bash -c "dockerize -wait tcp://database:3366 -wait tcp://zmd:27272 -wait tcp://cache:11211 -timeout 60s
       && python manage.py migrate --settings zds.settings.docker
       && python manage.py loaddata fixtures/*.yaml --settings zds.settings.docker
       && python manage.py load_factory_data fixtures/advanced/aide_tuto_media.yaml --settings zds.settings.docker
@@ -17,11 +22,13 @@ services:
     ports:
       - "8001:8000"
     links:
+      - zds_base
       - database
       - assets
       - zmd
       - cache
     depends_on:
+      - zds_base
       - database
       - assets
       - zmd
@@ -31,25 +38,27 @@ services:
   assets:
     build:
       context: .
-      dockerfile: Dockerfile-front
-      args:
-        GIT_USER: "${GIT_USER}"
-        GIT_BRANCH: "${GIT_BRANCH}"
+      dockerfile: front.Dockerfile
+    links:
+      - zds_base
+    depends_on:
+      - zds_base
     volumes:
       - asset_volume:/zds/dist:ro
   zmd:
     build:
       context: .
-      dockerfile: Dockerfile-zmd
-      args:
-        GIT_USER: "${GIT_USER}"
-        GIT_BRANCH: "${GIT_BRANCH}"
+      dockerfile: zmd.Dockerfile
     working_dir: /zds/zmd/node_modules/zmarkdown
     command: bash -c "npm run server && pm2 monit"
     ports:
       - "27272:27272"
     expose:
       - "27272"
+    links:
+      - zds_base
+    depends_on:
+      - zds_base
   cache:
     image: memcached:1.5-alpine
     ports:
@@ -59,9 +68,9 @@ services:
   database:
     image: mariadb:10.4
     ports:
-      - "3306:3306"
+      - "3366:3366"
     expose:
-      - "3306"
+      - "3366"
     restart: always
     environment:
       MYSQL_DATABASE: zds_docker
@@ -73,5 +82,6 @@ services:
 volumes:
   dbdata:
   rundb:
-  esdata:
   asset_volume:
+
+

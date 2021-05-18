@@ -1,11 +1,6 @@
-FROM python:3.7
+FROM python:3.9
+
 ENV PYTHONUNBUFFERED 1
-
-ARG GIT_USER
-ARG GIT_BRANCH
-
-RUN mkdir /zds
-WORKDIR /zds
 
 # -----
 # LATEX
@@ -13,7 +8,7 @@ WORKDIR /zds
 
 # Install packages
 RUN apt-get update
-RUN apt-get install -y texlive texlive-luatex texlive-lang-french texlive-latex-extra texlive-fonts-extra python-pygments xzdec librsvg2-bin
+RUN apt-get install -y texlive texlive-luatex texlive-lang-french texlive-latex-extra texlive-fonts-extra python-pygments xzdec librsvg2-bin imagemagick
 
 # Init tree
 RUN mkdir /root/texmf
@@ -58,6 +53,11 @@ RUN tlmgr install xfor
 RUN tlmgr install xifthen
 RUN tlmgr install xpatch
 RUN tlmgr install xstring
+
+
+COPY --from=zds_base:latest /zds /zds
+WORKDIR /zds
+
 
 # Install Tabu
 RUN mkdir -p /zds/texmf/tex/latex/tabu/
@@ -108,31 +108,31 @@ RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-code-pro/releas
 RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-code-pro/release/TTF/SourceCodePro-Semibold.ttf -O /usr/local/share/fonts/truetype/source-code-pro/SourceCodePro-Semibold.ttf
 RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-code-pro/release/TTF/SourceCodePro-SemiboldIt.ttf -O /usr/local/share/fonts/truetype/source-code-pro/SourceCodePro-SemiboldIt.ttf
 
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-Black.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Black.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-BlackIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-BlackIt.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-Bold.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Bold.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-BoldIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-BoldIt.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-ExtraLight.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-ExtraLight.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-ExtraLightIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-ExtraLightIt.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-It.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-It.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-Light.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Light.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-LightIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-LightIt.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-Regular.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Regular.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-Semibold.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Semibold.otf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/OTF/SourceSansPro-SemiboldIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-SemiboldIt.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-Black.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Black.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-BlackIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-BlackIt.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-Bold.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Bold.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-BoldIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-BoldIt.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-ExtraLight.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-ExtraLight.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-ExtraLightIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-ExtraLightIt.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-It.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-It.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-Light.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Light.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-LightIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-LightIt.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-Regular.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Regular.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-Semibold.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-Semibold.otf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/OTF/SourceSans3-SemiboldIt.otf -O /usr/local/share/fonts/opentype/source-sans-pro/SourceSansPro-SemiboldIt.otf
 
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-Black.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Black.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-BlackIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-BlackIt.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-Bold.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Bold.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-BoldIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-BoldIt.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-ExtraLight.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-ExtraLight.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-ExtraLightIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-ExtraLightIt.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-It.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-It.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-Light.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Light.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-LightIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-LightIt.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-Regular.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Regular.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-Semibold.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Semibold.ttf
-RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans-pro/release/TTF/SourceSansPro-SemiboldIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-SemiboldIt.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-Black.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Black.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-BlackIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-BlackIt.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-Bold.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Bold.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-BoldIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-BoldIt.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-ExtraLight.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-ExtraLight.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-ExtraLightIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-ExtraLightIt.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-It.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-It.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-Light.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Light.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-LightIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-LightIt.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-Regular.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Regular.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-Semibold.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-Semibold.ttf
+RUN wget -q https://raw.githubusercontent.com/adobe-fonts/source-sans/release/TTF/SourceSans3-SemiboldIt.ttf -O /usr/local/share/fonts/truetype/source-sans-pro/SourceSansPro-SemiboldIt.ttf
 
 RUN fc-cache -f
 
@@ -146,16 +146,11 @@ RUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VE
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-RUN wget -q https://github.com/${GIT_USER}/zds-site/archive/${GIT_BRANCH}.tar.gz -O deploy.tar.gz
-RUN tar -xf deploy.tar.gz
-RUN cp -rp zds-site-`echo ${GIT_BRANCH} | sed -r 's/\//-/g' | sed -r 's/^v//g'`/* .
-RUN rm -rf deploy.tar.gz
-RUN rm -rf zds-site-`echo ${GIT_BRANCH} | sed -r 's/\//-/g' | sed -r 's/^v//g'`
-
 COPY ./settings_docker.py /zds/zds/settings/docker.py
 COPY ./service/zds-watchdog.sh /zds/zds-watchdog.sh
 COPY ./service/zds-index.sh /zds/zds-index.sh
 
 RUN pip3 -q install -r /zds/requirements-dev.txt
 RUN pip3 -q install -r /zds/requirements-prod.txt
+
 

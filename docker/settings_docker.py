@@ -11,7 +11,7 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'zds_password',
         'HOST': 'database',
-        'PORT': '',
+        'PORT': '3366',
         'CONN_MAX_AGE': 600,
         'OPTIONS': {
             'charset': 'utf8mb4',

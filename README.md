@@ -82,6 +82,6 @@ Service | Port | Utilisé en version lite ?
 ---|---|---
 zds-site | `8001` | oui
 zmd | `27272` | oui
-mariadb | `3306` | oui
+mariadb | `3366` | oui
 memcached | `11211` | oui
 elasiticsearch | `9200` | non 

@@ -1,11 +1,11 @@
 zds-build-lite:
-	docker-compose build -f docker-compose-lite.yml --force-rm --no-cache
+	docker-compose -f docker-compose-lite.yml build --force-rm --no-cache
 
 zds-build-full:
 	docker-compose build --force-rm --no-cache
 
 zds-stop:
-	docker-compose down -v
+	docker-compose down -v --remove-orphans
 
 zds-start-lite: zds-stop
 	docker-compose -f docker-compose-lite.yml up

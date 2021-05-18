@@ -60,5 +60,5 @@ print("Start app")
 print("===================================================")
 
 if build.returncode == 0:
-    subprocess.run(["docker-compose", "down", "-v"])
+    subprocess.run(["docker-compose", "down", "-v", "--remove-orphans"])
     subprocess.run(["docker-compose", "-f", file, "up"])
